@@ -1,67 +1,57 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
+
+const Todo = props => (
+    <tr>
+        <td>{props.todo.todo_Title}</td>
+        <td>{props.todo.todo_description}</td>
+        <td>{props.todo.todo_priority}</td>
+        <td>
+            <Link to={"/edit/"+props.todo._id}>Edit</Link>
+        </td>
+    </tr>
+)
 
 export default class List extends Component {
+
     constructor(props) {
         super(props);
-
-        this.state = {
-            todo_Title: '',
-            todo_description: '',
-            todo_completed: false
-        }
+        this.state = {list: []};
     }
 
-    onChangeTodoTitle(e) {
-        this.setState({
-            todo_Title: e.target.value
-        });
+    componentDidMount() {
+        axios.get('http://localhost:4000/list/')
+            .then(response => {
+                this.setState({ list: response.data });
+            })
+            .catch(function (error){
+                console.log(error);
+            })
     }
 
-    onChangeTodoDescription(e) {
-        this.setState({
-            todo_description: e.target.value
-        });
-    }
-    onSubmit(e) {
-        e.preventDefault();
-        
-        console.log(`Form submitted:`);
-        console.log(`Todo Title: ${this.state.todo_Title}`);
-        console.log(`Todo Description: ${this.state.todo_description}`);
-        
-        this.setState({
-            todo_Title: '',
-            todo_description: '',
-            todo_completed: false
+    todoList() {
+        return this.state.list.map(function(currentTodo, i){
+            return <Todo todo={currentTodo} key={i} />;
         })
     }
-    
+
     render() {
         return (
-            <div style={{marginTop: 10}}>
-                <h3>New</h3>
-                <form onSubmit={this.onSubmit}>
-                <div className="form-group">
-                        <label>Title: </label>
-                        <input 
-                                type="text" 
-                                className="form-control"
-                                value={this.state.todo_Title}
-                                onChange={this.onChangeTodoTitle}
-                                />
-                    </div>
-                    <div className="form-group"> 
-                        <label>Description: </label>
-                        <input  type="text"
-                                className="form-control"
-                                value={this.state.todo_description}
-                                onChange={this.onChangeTodoDescription}
-                                />
-                    </div>
-                    <div className="form-group">
-                        <input type="submit" value="Create Todo" className="btn btn-primary" />
-                    </div>
-                </form>
+            <div>
+                <h3>List</h3>
+                <table className="table table-striped" style={{ marginTop: 20 }} >
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        { this.todoList() }
+                    </tbody>
+                </table>
             </div>
         )
     }
