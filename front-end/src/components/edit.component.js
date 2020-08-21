@@ -29,7 +29,7 @@ export default class Edit extends Component {
 
     onChangeTodoTitle(e) {
         this.setState({
-            todo_responsible: e.target.value
+            todo_Title: e.target.value
         });
     }
 
@@ -48,7 +48,7 @@ export default class Edit extends Component {
     onSubmit(e) {
         e.preventDefault();
         const obj = {
-            todo_responsible: this.state.todo_Title,
+            todo_Title: this.state.todo_Title,
             todo_description: this.state.todo_description,
                 todo_completed: this.state.todo_completed
         };
